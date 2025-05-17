@@ -1,0 +1,28 @@
+import {useNavigate} from "react-router-dom";
+
+const DashboardPage = () => {
+    const navigate = useNavigate()
+
+    const dashboardButtons = [
+        {name: "Customers", to: "/dashboard/customers"},
+        {name: "Customers", to: "/dashboard/customers"},
+        {name: "Customers", to: "/dashboard/customers"},
+    ]
+
+    const onButtonClicked = (to: string) => {
+        navigate(to)
+    }
+
+    return <div>
+        <h3>Dashboard</h3>
+        {dashboardButtons.map(
+            (button, index) =>
+                <button
+                    onClick={()=>onButtonClicked(button.to)}
+                    key={index}>
+                    {button.name}
+                </button>)}
+    </div>
+}
+
+export default DashboardPage

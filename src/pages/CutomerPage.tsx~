@@ -1,0 +1,106 @@
+import {useState} from "react";
+import {customerData} from "../data/CustomerData";
+import type {Customer} from "../types/Customer";
+import CustomerForm from "../forms/CustomerForm";
+import Dialog from "../components/Dialog";
+
+const CustomerPage = () => {
+    const [customers, setCustomers] = useState<Customer[]>(customerData);
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+    const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
+
+    const onSubmit = (customer: Customer) => {
+        if(editingCustomer !== null)  { // updating
+            setCustomers(
+                prevState =>
+                    prevState.map(originalCustomer =>
+                    
+                    )
+            )
+        } else { // add
+            setCustomers([...customers, customer])
+        }
+
+        setIsDialogOpen(false)
+    }
+
+    const onAddCustomerClicked = () => {
+        setEditingCustomer(null)
+        setIsDialogOpen(true)
+    }
+
+    const onCancel = () => {
+        setIsDialogOpen(false)
+    }
+
+    const onDelete = (id: number) => {
+        setCustomers((prevState) =>
+            prevState.filter((customer) => customer.id !== id))
+    }
+
+    const onEdit = (customer: Customer) => {
+        setEditingCustomer(customer)
+        setIsDialogOpen(true)
+    }
+
+    return (
+        <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+            <h3 className="text-3xl font-semibold text-gray-800 mb-6">Customers</h3>
+            <button onClick={onAddCustomerClicked} className="bg-black text-white p-2">Add Customer</button>
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-gray-50 border border-gray-200 rounded-lg">
+                    <thead>
+                    <tr className="bg-blue-600 text-white">
+                        <th className="py-3 px-6 text-left">Name</th>
+                        <th className="py-3 px-6 text-left">Address</th>
+                        <th className="py-3 px-6 text-left">DOB</th>
+                        <th className="py-3 px-6 text-left">Edit</th>
+                        <th className="py-3 px-6 text-left">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {customers.map((customer, index) => (
+                        <tr
+                            key={index}
+                            className="border-b border-gray-200 hover:bg-blue-50 transition"
+                        >
+                            <td className="py-3 px-6">{customer.name}</td>
+                            <td className="py-3 px-6">{customer.address}</td>
+                            <td className="py-3 px-6">{customer.dateOfBirth}</td>
+                            <td className="py-3 px-6">
+                                <button
+                                    className="bg-gray-400"
+                                    onClick={()=>onEdit(customer)}
+                                >
+                                    Edit
+                                </button>
+                            </td>
+                            <td className="py-3 px-6">
+                                <button
+                                    className="bg-gray-400"
+                                    onClick={()=>onDelete(customer.id)}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
+
+            <Dialog
+                title={editingCustomer !== null ? "Edit Customer" : "Add Customer"}
+                isDialogOpen={isDialogOpen}
+            >
+                <CustomerForm
+                    onSubmit={onSubmit}
+                    onCancel={onCancel}
+                    initialValues={editingCustomer !== null ? editingCustomer : undefined}
+                />
+            </Dialog>
+        </div>
+    );
+};
+
+export default CustomerPage;
